@@ -7,21 +7,22 @@ const fs = require('fs');
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
 const Manager = require("./lib/Manager");
+const renderHTML = require("./lib/renderHTML")
 
 
-const teamArr = [];
+const teamArr = []; 
 
-function init() {
-    htmlStart();
+//starts the application
+const init = () => {
     promptManager();
+};
 
-}
-//quewtions for manager
-function promptManager() {
+//Manager questions
+const promptManager = () => {
     inquirer.prompt([
         {
             type: "input",
-            name: "name",
+            name: "managerName",
             message: "Enter the Manager's name:",
         },
         {
@@ -39,16 +40,17 @@ function promptManager() {
             name: "email",
             message: "Enter the Manager's email:"
         }
-    ]).then(function ({ name, id, office, email }) {
-        let manager = new Manager(name, id, office, email);
+    ]).then(response => {
+        const manager = new Manager(response.managerName, response.id, response.office, response.email, 'Manager');
         teamArr.push(manager);
-        htmlCards(manager);
-        promptMemberInfo();
+        console.log(teamArr)
+        promptSelection();
+
     })
 }
 
-//new member
-function promptMemberInfo() {
+//select new member
+const promptSelection = () => {
     inquirer.prompt([
         {
             type: "list",
@@ -57,22 +59,22 @@ function promptMemberInfo() {
             choices: [
                 "Engineer",
                 "Intern",
-                "No more team member's"
+                "Done"
             ]
-        },
-    ]).then(function ({ role }) {
-        switch (role) {
-            case "Engineer":
-                return promptEngineer();
-            case "Intern": 
-                return promptIntern();
-            default:
-                htmlInfo();
         }
-    });
+    ]).then(response => {
+        const employee = response.role;
+        if(employee == 'Engineer') {
+            return promptEngineer();    
+        } else if (employee == 'Intern') {
+            return  promptIntern();
+        } else if(employee == 'Done') {
+           renderHTML(teamArr);
+        }
+    })
 }
 
-function promptEngineer() {
+const promptEngineer = () => {
     inquirer.prompt([
         {
             type: "input",
@@ -86,19 +88,19 @@ function promptEngineer() {
         },
         {
             type: "input",
-            name: "office",
-            message: "Enter the Engineer's office number:"
+            name: "github",
+            message: "Enter the Engineer's GitHub username:"
         },
         {
             type: "input",
             name: "email",
             message: "Enter the Engineer's email:"
         }
-    ]).then(function ({ name, id, office, email }) {
-        let engineer = new Engineer(name, id, office, email);
+    ]).then(response => {
+        const engineer = new Engineer(response.name, response.id, response.github, response.email, 'Engineer');
         teamArr.push(engineer);
-        htmlCards(engineer);
-        promptMemberInfo();
+        console.log(teamArr);
+        promptSelection();
         });
 }
 
@@ -125,14 +127,14 @@ function promptIntern() {
             message: "Enter the Intern's school:"
 
         }
-    ]).then(function ({ name, id, email, school }) {
-        let intern = new Intern(name, id, email, school);
+    ]).then(response => {
+        const intern = new Intern(response.name, response.id, response.email, response.school, 'Intern');
         teamArr.push(intern);
-        htmlCards(intern);
-        promptMemberInfo();
+        console.log(teamArr)
+        promptSelection();
         });
 }
 
-function htmlStart() {
 
-}
+init();
+
