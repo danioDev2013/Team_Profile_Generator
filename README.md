@@ -51,7 +51,7 @@ From the terminal run:
 <br>
 Results:
 <br>
-Checkout the results in the newRead folder or in the gif below.
+Checkout the results in the newRead folder. Below is an example of what the webpage will look like. 
 <br>
 <br>
 <img src="src/html.png" width="100%" alt="results"/>
